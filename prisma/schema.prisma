@@ -9,3 +9,18 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255) // default = varchar(191) for mysql
+  description String   @db.Text
+  status      Status   @default(VIEWING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Status {
+  VIEWING
+  IN_PROGRESS
+  CLOSED
+}
