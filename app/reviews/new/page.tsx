@@ -1,6 +1,6 @@
 'use client';
 
-import { TextField, Button, Callout } from '@radix-ui/themes';
+import { TextField, Button, Callout, Text } from '@radix-ui/themes';
 import SimpleMDE from "react-simplemde-editor";
 // import dynamic from 'next/dynamic';
 import "easymde/dist/easymde.min.css";
@@ -8,18 +8,25 @@ import axios from 'axios';
 import { useForm, Controller } from "react-hook-form"
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createReviewSchema } from '@/app/validationSchema';
+import { z } from 'zod';
 
 // dynamically importing simpleMDE so it doesn't render on server side
 // const SimpleMDE = dynamic(() => import("react-simplemde-editor"), { ssr: false });
 
-interface ReviewForm {
-    title: string;
-    description: string;
-}
+type ReviewForm = z.infer<typeof createReviewSchema>;
+
+// interface ReviewForm {
+//     title: string;
+//     description: string;
+// }
 
 const NewReviewPage = () => {
     const router = useRouter();
-    const {register, control, handleSubmit} = useForm<ReviewForm>();
+    const { register, control, handleSubmit, formState : { errors } } = useForm<ReviewForm>({
+        resolver: zodResolver(createReviewSchema),
+    });
     const [error, setError] = useState('');
 
     return (
@@ -40,11 +47,13 @@ const NewReviewPage = () => {
                     }
                 })}>
                 <TextField.Root placeholder='Series title' {...register('title')}/>
+                {errors.title && <Text color='red' as='p'>{errors.title.message}</Text>}
                 <Controller 
                     name='description' 
                     control={control}
                     render={({field}) => <SimpleMDE placeholder='Thoughts on series' {...field} />}
                 />
+                {errors.description && <Text color='red' as='p'>{errors.description.message}</Text>}
                 <Button>Submit New Review</Button>
             </form>
         </div>
