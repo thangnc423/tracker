@@ -1,13 +1,14 @@
 'use client';
 
-import { TextField, TextArea, Button } from '@radix-ui/themes';
-import React from 'react';
+import { TextField, Button } from '@radix-ui/themes';
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 const NewReviewPage = () => {
   return (
     <div className='max-w-xl space-y-3'>
       <TextField.Root placeholder='Series title'/>
-      <TextArea placeholder='Thoughts on series' />
+      <SimpleMDE placeholder='Thoughts on series' />
       <Button>Submit New Review</Button>
     </div>
   )
