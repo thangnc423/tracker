@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createReviewSchema } from '@/app/validationSchema';
 import { z } from 'zod';
+import ErrorMessage from '@/app/components/ErrorMessage';
 
 // dynamically importing simpleMDE so it doesn't render on server side
 // const SimpleMDE = dynamic(() => import("react-simplemde-editor"), { ssr: false });
@@ -47,13 +48,13 @@ const NewReviewPage = () => {
                     }
                 })}>
                 <TextField.Root placeholder='Series title' {...register('title')}/>
-                {errors.title && <Text color='red' as='p'>{errors.title.message}</Text>}
+                <ErrorMessage>{errors.title?.message}</ErrorMessage>
                 <Controller 
                     name='description' 
                     control={control}
                     render={({field}) => <SimpleMDE placeholder='Thoughts on series' {...field} />}
                 />
-                {errors.description && <Text color='red' as='p'>{errors.description.message}</Text>}
+                <ErrorMessage>{errors.description?.message}</ErrorMessage>
                 <Button>Submit New Review</Button>
             </form>
         </div>
