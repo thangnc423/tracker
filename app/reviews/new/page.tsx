@@ -1,6 +1,6 @@
 'use client';
 
-import { TextField, Button, Callout, Text } from '@radix-ui/themes';
+import { TextField, Button, Callout, Text, Spinner } from '@radix-ui/themes';
 import SimpleMDE from "react-simplemde-editor";
 // import dynamic from 'next/dynamic';
 import "easymde/dist/easymde.min.css";
@@ -29,6 +29,7 @@ const NewReviewPage = () => {
         resolver: zodResolver(createReviewSchema),
     });
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     return (
         <div className='max-w-xl'>
@@ -41,9 +42,11 @@ const NewReviewPage = () => {
                 className='max-w-xl space-y-3' 
                 onSubmit={handleSubmit(async (data) => {
                     try {
+                        setIsSubmitting(true);
                         await axios.post('/api/reviews', data);
                         router.push('/reviews');
                     } catch (error) {
+                        setIsSubmitting(false);
                         setError(`Error submitting reviews ${error}`);
                     }
                 })}>
@@ -55,7 +58,7 @@ const NewReviewPage = () => {
                     render={({field}) => <SimpleMDE placeholder='Thoughts on series' {...field} />}
                 />
                 <ErrorMessage>{errors.description?.message}</ErrorMessage>
-                <Button>Submit New Review</Button>
+                <Button disabled={isSubmitting} className="hover:cursor-pointer">Submit New Review {isSubmitting && <Spinner />}</Button>
             </form>
         </div>
     )
